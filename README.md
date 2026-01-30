@@ -2,7 +2,7 @@
 
 > **[中文文档 / Chinese Documentation](./README_CN.md)**
 
-A Word document formatting toolkit for Chinese documents. Diagnose formatting issues, fix punctuation, and apply standardized styles with one command.
+A Word document formatting toolkit for Chinese documents (docx). Diagnose formatting issues, fix punctuation, and apply standardized styles with one command. Available for Claude Code, Codex, OpenCode.
 
 ## ✨ Features
 
