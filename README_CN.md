@@ -2,7 +2,7 @@
 
 > **[English Documentation / 英文文档](./README.md)**
 
-专业的 Word 文档格式处理工具包。一键诊断格式问题、修复标点符号、统一文档样式。
+专业的 Word 文档格式（如DOCX格式）处理工具包。一键诊断格式问题、修复标点符号、统一文档样式。可用于Claude Code, Codex, OpenCode等。
 
 ## ✨ 功能概览
 
