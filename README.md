@@ -2,12 +2,10 @@
 
 > **[中文版本 README / Chinese Version](./README_CN.md)**
 
-> 💡 **想要图形界面版？**  
+
+> 💡 **想要无需联网、一键运行修复格式的桌面应用版本？**  
 > 现已推出 **[Document Format GUI](https://github.com/KaguraNanaga/docformat-gui)** —— 无需联网、一键修复公文格式的桌面应用，小白也能轻松上手！
 
-A Word document formatting toolkit for Chinese documents (docx). Diagnose formatting issues, fix punctuation, and apply standardized styles with one command. Available for Claude Code, Codex, OpenCode.
-
-...
 
 A Word document formatting toolkit for Chinese documents (docx). Diagnose formatting issues, fix punctuation, and apply standardized styles with one command. Available for Claude Code, Codex, OpenCode.
 
