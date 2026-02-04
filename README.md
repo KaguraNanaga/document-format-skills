@@ -1,6 +1,16 @@
 # 📄 document-format-skills
 
+<div align="center">
+  <a href="https://github.com/KaguraNanaga/docformat-gui">
+    <img src="https://img.shields.io/badge/✨_试试可无需联网、本地运行的版本-Document_Format_GUI-blue?logo=github" alt="Document Format GUI">
+  </a>
+</div>
+
 > **[中文版本 README / Chinese Version](./README_CN.md)**
+
+A Word document formatting toolkit for Chinese documents (docx). Diagnose formatting issues, fix punctuation, and apply standardized styles with one command. Available for Claude Code, Codex, OpenCode.
+
+...
 
 A Word document formatting toolkit for Chinese documents (docx). Diagnose formatting issues, fix punctuation, and apply standardized styles with one command. Available for Claude Code, Codex, OpenCode.
 
