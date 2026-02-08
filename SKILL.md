@@ -14,6 +14,8 @@ description: 文档格式处理工具。支持格式诊断、标点符号修复�
 | 格式诊断 | 分析文档存在的格式问题 | `analyzer.py` |
 | 标点修复 | 修复中英文标点混用 | `punctuation.py` |
 | 格式统一 | 应用预设格式规范 | `formatter.py` |
+| 表格自动调整 | 自动调整表格布局与对齐 | `formatter.py` |
+| 页码规范 | 统一页码格式与位置 | `formatter.py` |
 
 ## 使用方法
 
