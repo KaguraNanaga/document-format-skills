@@ -14,6 +14,7 @@ A Word document formatting toolkit for Chinese documents (docx). Diagnose format
 | Module | Description | Script |
 |--------|-------------|--------|
 | **Format Analyzer** | Detect formatting issues in documents | `analyzer.py` |
+| **Markdown Pipeline** | Convert Markdown, optionally fix punctuation, apply any formatting preset, and run diagnostics | `md_to_docx.py` |
 | **Punctuation Fixer** | Fix mixed Chinese/English punctuation | `punctuation.py` |
 | **Style Formatter** | Apply preset formatting standards | `formatter.py` |
 
@@ -33,19 +34,53 @@ cd document-format-skills
 
 ### Usage
 
-**1. Diagnose formatting issues**
+**1. Convert Markdown to DOCX**
+
+```bash
+python scripts/md_to_docx.py input.md output.docx
+```
+
+By default, the Markdown pipeline converts the file, fixes punctuation, and runs final diagnostics.
+
+Use `--title` to override the Word title and `--overwrite` to replace an existing output file.
+
+**2. Convert Markdown with a formatting preset**
+
+The same Markdown entry point can use all formatter presets:
+
+```bash
+python scripts/md_to_docx.py input.md --preset official
+python scripts/md_to_docx.py input.md --preset academic
+python scripts/md_to_docx.py input.md --preset legal
+python scripts/md_to_docx.py input.md --preset custom
+```
+
+When the output path is omitted, preset outputs default to `input_official.docx`, `input_academic.docx`, and so on.
+
+Useful options: `--title`, `--overwrite`, `--draft-only`, `--no-punctuation`, `--skip-diagnose`, `--keep-temp`, `--no-page-number`.
+
+**3. Convert Markdown without formatting**
+
+```bash
+python scripts/md_to_docx.py input.md
+
+# Only convert Markdown, then run diagnostics
+python scripts/md_to_docx.py input.md --draft-only
+```
+
+**4. Diagnose formatting issues**
 
 ```bash
 uv run --with python-docx python scripts/analyzer.py input.docx
 ```
 
-**2. Fix punctuation**
+**5. Fix punctuation**
 
 ```bash
 uv run --with python-docx python scripts/punctuation.py input.docx output.docx
 ```
 
-**3. Apply formatting preset**
+**6. Apply formatting preset**
 
 ```bash
 # Official document format (GB/T 9704-2012)
@@ -117,9 +152,13 @@ document-format-skills/
 ├── README_CN.md        # Chinese documentation
 ├── SKILL.md            # Skill definition file
 └── scripts/
-    ├── analyzer.py     # Format diagnostics
-    ├── punctuation.py  # Punctuation fixer
-    └── formatter.py    # Style formatter
+    ├── analyzer.py              # Format diagnostics
+    ├── converter.py             # Legacy document conversion helper
+    ├── fix_spacing.py           # Line spacing helper
+    ├── fix_spacing_simple.py    # Simple line spacing helper
+    ├── formatter.py             # Style formatter
+    ├── md_to_docx.py            # Markdown to DOCX pipeline
+    └── punctuation.py           # Punctuation fixer
 ```
 
 ## 🔧 Dependencies
@@ -130,10 +169,12 @@ Automatically installed when using `uv run --with python-docx`.
 
 ## ⚠️ Notes
 
-1. **Only supports `.docx`** — Legacy `.doc` format is not supported
+1. **Core processing uses `.docx`** — Legacy `.doc`/`.wps` conversion depends on platform-specific Office/WPS support through `converter.py`
 2. **Backup your files** — Always keep a backup before processing
 3. **Font requirements** — Output files require corresponding fonts installed on the system to display correctly
 4. **Table content** — Text within tables is also processed
+5. **Markdown conversion is intentionally basic** — It supports common headings, lists, quotes, code blocks, and bold text, then relies on diagnostics and formatter presets for final layout
+6. **Markdown diagnostics run by default** — Use `--skip-diagnose` only when you need quiet batch output
 
 ## 📄 License
 

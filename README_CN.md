@@ -9,6 +9,7 @@
 | 模块 | 说明 | 脚本 |
 |------|------|------|
 | **格式诊断** | 分析文档存在的格式问题 | `analyzer.py` |
+| **Markdown 工作流** | Markdown 转换、标点修复、套用任意格式预设并运行最终诊断 | `md_to_docx.py` |
 | **标点修复** | 修复中英文标点混用 | `punctuation.py` |
 | **格式统一** | 应用预设格式规范 | `formatter.py` |
 
@@ -28,7 +29,41 @@ cd document-format-skills
 
 ### 使用方法
 
-**1. 格式诊断**
+**1. Markdown 转 DOCX**
+
+```bash
+python scripts/md_to_docx.py input.md output.docx
+```
+
+默认流程会完成 Markdown 转换、标点修复和最终诊断。
+
+可使用 `--title` 指定 Word 主标题，使用 `--overwrite` 覆盖已有输出文件。
+
+**2. Markdown 转指定格式预设**
+
+同一个 Markdown 入口可以使用所有 formatter 预设：
+
+```bash
+python scripts/md_to_docx.py input.md --preset official
+python scripts/md_to_docx.py input.md --preset academic
+python scripts/md_to_docx.py input.md --preset legal
+python scripts/md_to_docx.py input.md --preset custom
+```
+
+省略输出路径时，预设输出默认生成 `input_official.docx`、`input_academic.docx` 等。
+
+常用选项：`--title`、`--overwrite`、`--draft-only`、`--no-punctuation`、`--skip-diagnose`、`--keep-temp`、`--no-page-number`。
+
+**3. Markdown 仅转换不套格式**
+
+```bash
+python scripts/md_to_docx.py input.md
+
+# 只转换 Markdown，然后运行诊断
+python scripts/md_to_docx.py input.md --draft-only
+```
+
+**4. 格式诊断**
 
 ```bash
 uv run --with python-docx python scripts/analyzer.py input.docx
@@ -53,13 +88,13 @@ uv run --with python-docx python scripts/analyzer.py input.docx
   - 字号不统一: 检测到 5 种字号
 ```
 
-**2. 修复标点**
+**5. 修复标点**
 
 ```bash
 uv run --with python-docx python scripts/punctuation.py input.docx output.docx
 ```
 
-**3. 应用格式预设**
+**6. 应用格式预设**
 
 ```bash
 # 公文格式（GB/T 9704-2012）
@@ -72,7 +107,7 @@ uv run --with python-docx python scripts/formatter.py input.docx output.docx --p
 uv run --with python-docx python scripts/formatter.py input.docx output.docx --preset legal
 ```
 
-**4. 组合使用**
+**7. 组合使用**
 
 ```bash
 # 先诊断
@@ -159,9 +194,13 @@ document-format-skills/
 ├── README_CN.md        # 中文文档
 ├── SKILL.md            # 技能定义文件
 └── scripts/
-    ├── analyzer.py     # 格式诊断
-    ├── punctuation.py  # 标点修复
-    └── formatter.py    # 格式统一
+    ├── analyzer.py              # 格式诊断
+    ├── converter.py             # 旧格式文档转换辅助
+    ├── fix_spacing.py           # 行距修复辅助
+    ├── fix_spacing_simple.py    # 简化行距修复辅助
+    ├── formatter.py             # 格式统一
+    ├── md_to_docx.py            # Markdown 转 DOCX 工作流
+    └── punctuation.py           # 标点修复
 ```
 
 ## 🔧 依赖
@@ -172,10 +211,12 @@ document-format-skills/
 
 ## ⚠️ 注意事项
 
-1. **只支持 .docx** — 不支持旧版 .doc 格式
+1. **核心处理对象为 .docx** — `.doc`/`.wps` 等旧格式转换依赖 `converter.py` 及特定平台的 Office/WPS 支持
 2. **备份原文件** — 修改前建议备份
 3. **字体依赖** — 输出文件需要系统安装对应字体才能正确显示
 4. **表格内容** — 会自动处理表格内的文字
+5. **Markdown 转换保持基础能力** — 支持常见标题、列表、引用、代码块和加粗文本，最终版式由诊断结果和格式预设继续处理
+6. **Markdown 默认运行诊断** — 批处理或静默输出时可使用 `--skip-diagnose`
 
 ## 📄 许可证
 
