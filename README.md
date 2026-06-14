@@ -1,144 +1,107 @@
-# 📄 document-format-skills
+# document-format-skills
 
-> **[中文版本 README / Chinese Version](./README_CN.md)**
+Command-line skills for cleaning and formatting Chinese Word documents. This repo mirrors the core processing logic from [Document Format GUI](https://github.com/KaguraNanaga/docformat-gui) v1.8.7 so agents such as Codex, Claude Code, and OpenCode can run the same document pipeline without the desktop UI.
 
+Chinese docs: [README_CN.md](./README_CN.md)
 
-> 💡 **想要无需联网、一键运行修复格式的桌面应用版本？**  
-> 现已推出 **[Document Format GUI](https://github.com/KaguraNanaga/docformat-gui)** —— 无需联网、一键修复公文格式的桌面应用，小白也能轻松上手！
+## Features
 
+- Smart one-shot processing: punctuation/spacing cleanup plus formatting.
+- Format diagnosis for punctuation, numbering, paragraph, and font issues.
+- Official, academic, legal, and custom presets.
+- GB/T 9704-2012 style page margins, fonts, line spacing, headings, signatures, dates, and page numbers.
+- Safer page-number handling with styles, positions, offsets, replacement control, and non-page footer protection.
+- Table normalization with optional smart alignment.
+- Custom settings compatible with the desktop app schema v2 and exported preset JSON.
+- Word revision marks for supported formatting changes.
+- macOS font fallback for common Chinese official-document fonts.
+- `.doc` / `.wps` conversion on Windows when WPS Office or Microsoft Word is installed.
+- Plain text or Markdown to formatted DOCX.
 
-A Word document formatting toolkit for Chinese documents (docx). Diagnose formatting issues, fix punctuation, and apply standardized styles with one command. Available for Claude Code, Codex, OpenCode.
-
-## ✨ Features
-
-| Module | Description | Script |
-|--------|-------------|--------|
-| **Format Analyzer** | Detect formatting issues in documents | `analyzer.py` |
-| **Punctuation Fixer** | Fix mixed Chinese/English punctuation | `punctuation.py` |
-| **Style Formatter** | Apply preset formatting standards | `formatter.py` |
-
-## 🚀 Quick Start
-
-### Prerequisites
+## Requirements
 
 - Python 3.8+
-- [uv](https://github.com/astral-sh/uv) (recommended) or pip
+- `python-docx`
+- `pywin32` only for `.doc/.wps` conversion on Windows
 
-### Installation
-
-```bash
-git clone https://github.com/yourusername/document-format-skills.git
-cd document-format-skills
-```
-
-### Usage
-
-**1. Diagnose formatting issues**
+Use `uv` for ad-hoc runs:
 
 ```bash
-uv run --with python-docx python scripts/analyzer.py input.docx
+uv run --with python-docx python scripts/process.py --help
 ```
 
-**2. Fix punctuation**
+For Windows `.doc/.wps` conversion:
 
 ```bash
-uv run --with python-docx python scripts/punctuation.py input.docx output.docx
+uv run --with python-docx --with pywin32 python scripts/process.py --help
 ```
 
-**3. Apply formatting preset**
+## Quick Start
+
+Smart cleanup:
 
 ```bash
-# Official document format (GB/T 9704-2012)
-uv run --with python-docx python scripts/formatter.py input.docx output.docx --preset official
-
-# Academic paper format
-uv run --with python-docx python scripts/formatter.py input.docx output.docx --preset academic
-
-# Legal document format
-uv run --with python-docx python scripts/formatter.py input.docx output.docx --preset legal
+uv run --with python-docx python scripts/process.py smart input.docx output.docx --preset official
 ```
 
-## 📋 What It Fixes
+Analyze only:
 
-### Punctuation Issues
-
-The toolkit intelligently converts punctuation based on context:
-
-| Type | Incorrect | Chinese | English |
-|------|-----------|---------|---------|
-| Parentheses | Mixed usage | （） | () |
-| Quotes | Straight `"` | "" '' | "" '' |
-| Colon | Mixed usage | ： | : |
-| Comma | Mixed usage | ， | , |
-| Period | Mixed usage | 。 | . |
-| Semicolon | Mixed usage | ； | ; |
-| Ellipsis | `...` | …… | ... |
-| Dash | `--` | —— | -- |
-
-### Format Issues
-
-- **Paragraph indentation** — Detects missing first-line indents
-- **Line spacing** — Identifies inconsistent spacing
-- **Font usage** — Flags mixed fonts and sizes
-- **Numbering** — Catches inconsistent numbering styles (e.g., mixing `1.` with `1、`)
-
-## 📐 Formatting Presets
-
-### Official Document (GB/T 9704-2012)
-
-Chinese government document standard:
-
-- **Page**: A4, margins: top 37mm, bottom 35mm, left 28mm, right 26mm
-- **Title**: FangZheng XiaoBiaoSong, 22pt, centered
-- **Body**: FangSong_GB2312, 16pt, 2-character indent, 28pt line spacing
-- **Headings**: Structured with 一、/ （一）/ 1. / （1）
-
-### Academic Paper
-
-Standard academic formatting:
-
-- **Page**: A4, 25mm margins
-- **Title**: SimHei, 18pt, bold, centered
-- **Body**: SimSun/Times New Roman, 12pt, 1.5x line spacing
-
-### Legal Document
-
-Legal document formatting:
-
-- **Page**: A4, margins: top 30mm, bottom 25mm, left 30mm, right 25mm
-- **Title**: SimSun bold, 22pt, centered
-- **Body**: SimSun, 14pt, 1.5x line spacing
-
-## 📁 Project Structure
-
-```
-document-format-skills/
-├── README.md           # English documentation
-├── README_CN.md        # Chinese documentation
-├── SKILL.md            # Skill definition file
-└── scripts/
-    ├── analyzer.py     # Format diagnostics
-    ├── punctuation.py  # Punctuation fixer
-    └── formatter.py    # Style formatter
+```bash
+uv run --with python-docx python scripts/process.py analyze input.docx
+uv run --with python-docx python scripts/process.py analyze input.docx --json
 ```
 
-## 🔧 Dependencies
+Punctuation and spacing only:
 
-- [python-docx](https://python-docx.readthedocs.io/)
+```bash
+uv run --with python-docx python scripts/process.py punctuation input.docx output.docx --space-mode keep_en_boundary
+```
 
-Automatically installed when using `uv run --with python-docx`.
+Formatting only:
 
-## ⚠️ Notes
+```bash
+uv run --with python-docx python scripts/process.py format input.docx output.docx --preset official
+```
 
-1. **Only supports `.docx`** — Legacy `.doc` format is not supported
-2. **Backup your files** — Always keep a backup before processing
-3. **Font requirements** — Output files require corresponding fonts installed on the system to display correctly
-4. **Table content** — Text within tables is also processed
+Create a formatted DOCX from Markdown or text:
 
-## 📄 License
+```bash
+uv run --with python-docx python scripts/from_text.py input.md output.docx --title "Work Plan"
+```
 
-MIT License
+## Useful Options
 
-## 🤝 Contributing
+```bash
+--preset official|academic|legal|custom
+--custom-settings path.json
+--revision
+--deep-clean
+--smart-table-align
+--no-page-number
+--page-number-style dash|plain|page_text|page_total
+--page-number-position outside|left|center|right
+--space-mode remove_all|keep_en_boundary|keep_all
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+`--custom-settings` accepts desktop schema v2 config files, exported preset files like `{"preset": {...}}`, or plain preset/override JSON.
+
+## Scripts
+
+| Script | Purpose |
+| --- | --- |
+| `scripts/process.py` | Main CLI pipeline: `smart`, `analyze`, `punctuation`, `format`. |
+| `scripts/formatter.py` | Formatting engine and preset handling. |
+| `scripts/punctuation.py` | Punctuation and spacing fixer. |
+| `scripts/from_text.py` | Text/Markdown to DOCX generator. |
+| `scripts/analyzer.py` | Diagnostic helpers. |
+| `scripts/converter.py` | Windows `.doc/.wps` conversion helpers. |
+
+## Notes
+
+- `.docx` is the most reliable format.
+- `.doc/.wps` requires Windows plus WPS Office or Microsoft Word.
+- Keep a backup of important documents before running automated formatting.
+
+## License
+
+MIT

@@ -1,190 +1,107 @@
 ---
 name: document-format-skills
-description: 文档格式处理工具。支持格式诊断、标点符号修复、格式统一。输入杂乱的文档，输出规范整洁的docx。
+description: Chinese Word document formatting toolkit for .docx/.doc/.wps workflows. Use when Codex needs to diagnose document formatting, fix mixed Chinese/English punctuation and spacing, apply official/academic/legal/custom presets, normalize tables and page numbers, preserve or output Word revision marks, convert plain text or Markdown into formatted DOCX, or batch/script document cleanup for Chinese official documents.
 ---
 
-# 文档格式处理工具
+# Document Format Skills
 
-处理文档格式问题：诊断格式错误、修复标点符号、统一文档样式。
+Use these scripts to clean and format Chinese Word documents from the command line. Prefer `scripts/process.py` for normal work because it mirrors the desktop app's core pipeline without the GUI.
 
-## 功能概览
+## Quick Workflow
 
-| 功能 | 说明 | 脚本 |
-|------|------|------|
-| 格式诊断 | 分析文档存在的格式问题 | `analyzer.py` |
-| 标点修复 | 修复中英文标点混用 | `punctuation.py` |
-| 格式统一 | 应用预设格式规范 | `formatter.py` |
-| 表格自动调整 | 自动调整表格布局与对齐 | `formatter.py` |
-| 页码规范 | 统一页码格式与位置 | `formatter.py` |
-
-## 使用方法
-
-### 格式诊断
-
-分析文档存在的问题，输出诊断报告：
+Run one smart pass when the user wants the document cleaned end to end:
 
 ```bash
-uv run --with python-docx python3 scripts/analyzer.py input.docx
+uv run --with python-docx python scripts/process.py smart input.docx output.docx --preset official
 ```
 
-输出示例：
-```
-=== 格式诊断报告 ===
-
-【标点问题】共 5 处
-  - 第2段: 英文括号 () 建议改为 （）
-  - 第3段: 英文引号 "" 建议改为 ""
-
-【序号问题】共 2 处
-  - 序号格式不统一: 同时存在 "1、" 和 "1." 
-  - 第5段: 层级跳跃，从 "一、" 直接到 "1."
-
-【段落问题】共 3 处
-  - 第2、4、7段: 缺少首行缩进
-  - 行距不统一: 存在单倍、1.5倍混用
-
-【字体问题】共 2 处
-  - 正文字号不统一: 12pt、14pt 混用
-  - 检测到 4 种字体混用
-```
-
-### 标点符号修复
+Run diagnostics only:
 
 ```bash
-# 智能模式（根据上下文判断）
-uv run --with python-docx python3 scripts/punctuation.py input.docx output.docx
-
-# 强制全部转中文标点
-uv run --with python-docx python3 scripts/punctuation.py input.docx output.docx --mode chinese
-
-# 强制全部转英文标点
-uv run --with python-docx python3 scripts/punctuation.py input.docx output.docx --mode english
-
-# 只修复特定类型
-uv run --with python-docx python3 scripts/punctuation.py input.docx output.docx --fix brackets,quotes
+uv run --with python-docx python scripts/process.py analyze input.docx
+uv run --with python-docx python scripts/process.py analyze input.docx --json
 ```
 
-### 格式统一
+Run only punctuation/spacing cleanup:
 
 ```bash
-# 应用公文格式
-uv run --with python-docx python3 scripts/formatter.py input.docx output.docx --preset official
-
-# 应用学术论文格式
-uv run --with python-docx python3 scripts/formatter.py input.docx output.docx --preset academic
-
-# 应用法律文书格式
-uv run --with python-docx python3 scripts/formatter.py input.docx output.docx --preset legal
+uv run --with python-docx python scripts/process.py punctuation input.docx output.docx --space-mode keep_en_boundary
 ```
 
-### 组合使用
+Run only formatting:
 
 ```bash
-# 先诊断
-uv run --with python-docx python3 scripts/analyzer.py messy.docx
-
-# 修复标点 + 应用格式
-uv run --with python-docx python3 scripts/punctuation.py messy.docx temp.docx
-uv run --with python-docx python3 scripts/formatter.py temp.docx clean.docx --preset official
+uv run --with python-docx python scripts/process.py format input.docx output.docx --preset official
 ```
 
----
+On Windows, `.doc` and `.wps` input/output are supported through WPS or Microsoft Word COM automation:
 
-## 标点符号处理规则
-
-### 修复范围
-
-| 类型 | 错误 | 正确（中文） | 正确（英文） |
-|------|------|-------------|-------------|
-| 括号 | 中英混用 | （） | () |
-| 引号 | 直引号 "" | ""'' | "" '' |
-| 冒号 | 中英混用 | ： | : |
-| 逗号 | 中英混用 | ， | , |
-| 句号 | 中英混用 | 。 | . |
-| 分号 | 中英混用 | ； | ; |
-| 问号 | 中英混用 | ？ | ? |
-| 叹号 | 中英混用 | ！ | ! |
-| 省略号 | ... | …… | ... |
-| 破折号 | -- 或 — | —— | -- |
-
-### 智能判断逻辑
-
-1. **中文环境**：前后都是中文字符 → 用中文标点
-2. **英文环境**：前后都是英文/数字 → 用英文标点
-3. **混合环境**：默认用中文标点（可配置）
-
-### 特殊处理
-
-- 数字与单位之间：`100%` 保持英文
-- 英文缩写：`e.g.` `i.e.` 保持英文句点
-- 网址邮箱：保持原样不处理
-- 代码块：跳过不处理
-
----
-
-## 格式预设
-
-### 公文格式（GB/T 9704-2012）
-
-```
-页面：A4，上边距37mm，下边距35mm，左边距28mm，右边距26mm
-标题：方正小标宋简体，二号（22pt），居中
-一级标题：黑体，三号（16pt），顶格，"一、"
-二级标题：楷体_GB2312，三号（16pt），顶格，"（一）"
-三级标题：仿宋_GB2312，三号（16pt），首行缩进，"1."
-正文：仿宋_GB2312，三号（16pt），首行缩进2字符，行距固定值28pt
+```bash
+uv run --with python-docx --with pywin32 python scripts/process.py smart input.wps output.wps
 ```
 
-### 学术论文格式
+## Scripts
 
-```
-页面：A4，边距25mm
-标题：黑体，小二（18pt），居中
-一级标题：黑体，小三（15pt），"1"
-二级标题：黑体，四号（14pt），"1.1"
-正文：宋体/Times New Roman，小四（12pt），首行缩进2字符，行距1.5倍
-```
+| Script | Use |
+| --- | --- |
+| `scripts/process.py` | One-shot CLI for `smart`, `analyze`, `punctuation`, and `format`; handles `.doc/.wps` conversion on Windows. |
+| `scripts/formatter.py` | Apply formatting presets, custom JSON settings, page numbers, table cleanup, revision marks, macOS font fallback. |
+| `scripts/punctuation.py` | Fix punctuation while preserving run formatting; supports spacing strategies. |
+| `scripts/from_text.py` | Create a DOCX from `.txt` or Markdown, then optionally run smart formatting. |
+| `scripts/analyzer.py` | Lower-level diagnostic script. |
+| `scripts/converter.py` | Windows-only `.doc/.wps` conversion helpers. |
 
-### 法律文书格式
+## Formatting Options
 
-```
-页面：A4，上边距30mm，下边距25mm，左边距30mm，右边距25mm
-标题：宋体加粗，二号（22pt），居中
-条款标题：黑体，四号（14pt），"第一条"
-正文：宋体，四号（14pt），首行缩进2字符，行距1.5倍
-```
+Built-in presets:
 
----
+- `official`: GB/T 9704-2012 style official document formatting.
+- `academic`: academic paper formatting.
+- `legal`: legal document formatting.
+- `custom`: read the active desktop custom preset when available.
 
-## 文件结构
+Useful flags:
 
-```
-document-format-skills/
-├── SKILL.md
-├── README.md
-├── scripts/
-│   ├── analyzer.py      # 格式诊断
-│   ├── punctuation.py   # 标点修复
-│   └── formatter.py     # 格式统一
-└── presets/
-    ├── official.yaml    # 公文格式
-    ├── academic.yaml    # 学术论文
-    └── legal.yaml       # 法律文书
+```bash
+--custom-settings path.json
+--revision
+--deep-clean
+--smart-table-align
+--no-page-number
+--page-number-style dash|plain|page_text|page_total
+--page-number-position outside|left|center|right
+--page-number-offset-mm 7
+--no-bold-serial
 ```
 
----
+`--custom-settings` accepts desktop schema v2 config files, exported preset files shaped as `{"preset": {...}}`, or plain preset/override JSON. For non-custom presets, the JSON is merged over the selected preset.
 
-## 依赖
+## Punctuation And Spacing
 
-- python-docx
+Punctuation cleanup protects URLs, email addresses, Windows paths, time values like `9:30`, and standards like `ISO 9001:2015`. It fixes brackets, colons, semicolons, question/exclamation marks, Chinese comma/period contexts, ellipses, dashes, and paired quotes.
 
-使用 `uv run --with python-docx` 自动安装。
+Spacing modes:
 
----
+- `remove_all`: delete half-width and full-width spaces.
+- `keep_en_boundary`: remove Chinese-to-Chinese spaces but keep exactly one space between Chinese and English/digits.
+- `keep_all`: leave spaces unchanged.
 
-## 注意事项
+## Text Or Markdown To DOCX
 
-1. **只支持 .docx**：不支持旧版 .doc 格式
-2. **备份原文件**：修改前建议备份
-3. **字体依赖**：输出文件需要系统安装对应字体才能正确显示
-4. **表格内容**：会自动处理表格内的文字
+Generate and format a document from text:
+
+```bash
+uv run --with python-docx python scripts/from_text.py input.md output.docx --title "工作方案"
+```
+
+Markdown mode detects headings, bold spans, ordered/unordered lists, quotes, and fenced code blocks. `#` becomes the main title, `##` becomes `一、`, `###` becomes `（一）`, and deeper headings become numbered lower-level headings.
+
+Use `--no-process` to only create the raw DOCX.
+
+## Implementation Notes
+
+- `.docx` processing needs only `python-docx`.
+- `.doc/.wps` conversion needs Windows plus WPS Office or Microsoft Word and `pywin32`.
+- Page number handling avoids overwriting non-page footer content and can replace existing page-number footers when requested.
+- Default table formatting preserves original alignment; use `--smart-table-align` for numeric/right and short-text/center alignment.
+- macOS font handling keeps installed official fonts when present and falls back to compatible system fonts only when detection confirms the original is missing.
