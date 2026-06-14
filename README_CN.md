@@ -1,8 +1,8 @@
-# document-format-skills
+# document-format-skills 公文格式助手
 
 用于清理和格式化中文 Word 文档的命令行 Skill。当前核心处理逻辑已同步到 [Document Format GUI](https://github.com/KaguraNanaga/docformat-gui) v1.8.7，适合 Codex、Claude Code、OpenCode 等 agent 在没有桌面 UI 的场景下直接调用。
 
-English docs: [README.md](./README.md)
+英文说明 / English docs: [README.md](./README.md)
 
 ## 功能
 

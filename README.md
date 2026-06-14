@@ -1,8 +1,10 @@
-# document-format-skills
+# document-format-skills 公文格式助手
 
-Command-line skills for cleaning and formatting Chinese Word documents. This repo mirrors the core processing logic from [Document Format GUI](https://github.com/KaguraNanaga/docformat-gui) v1.8.7 so agents such as Codex, Claude Code, and OpenCode can run the same document pipeline without the desktop UI.
+Command-line skills for cleaning and formatting Chinese official documents for the government, CCP (China Communist Party), and the state-owned enterprises. This repo mirrors the core processing logic from [Document Format GUI 公文格式助手](https://github.com/KaguraNanaga/docformat-gui) v1.8.7 so agents such as Codex, Claude Code, and OpenCode can run the same document pipeline without the desktop UI.
 
-Chinese docs: [README_CN.md](./README_CN.md)
+公文格式助手是一个面向中文公文排版的 Skill 工具包，用于诊断 Word 文档格式问题、修复中英文标点和空格混用、统一公文/论文/法律文书格式、处理页码和表格，并支持从纯文本或 Markdown 生成规范 DOCX。它适合在 Codex、Claude Code、OpenCode 等命令行 agent 中自动处理 `.docx` 文档。
+
+中文版说明 / Chinese docs: [README_CN.md](./README_CN.md)
 
 ## Features
 
