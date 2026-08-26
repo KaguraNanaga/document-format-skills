@@ -4,6 +4,10 @@
 
 英文说明 / English docs: [README.md](./README.md)
 
+> 🌐 **不想安装，也不需要 Agent？**
+>
+> 直接打开 **[公文格式处理工具网页版](https://web.gongwengeshizhushou.com)**，选择 `.docx` 文档即可开始处理。无需登录，文档只在当前浏览器中处理，不会上传到服务器。
+
 ## 功能
 
 - 智能一键处理：标点/空格清理 + 文档格式统一。

@@ -8,6 +8,10 @@
 >
 > 现已推出 **[Document Format GUI 公文格式助手](https://github.com/KaguraNanaga/docformat-gui)** —— 无需联网、一键修复公文格式的桌面应用，小白也能轻松上手！
 
+> 🌐 **不想安装，也不需要 Agent？**
+>
+> 直接打开 **[公文格式处理工具网页版](https://web.gongwengeshizhushou.com)**，选择 `.docx` 文档即可开始处理。无需登录，文档只在当前浏览器中处理，不会上传到服务器。
+
 A Word document formatting toolkit for Chinese official documents for the government, CCP (China Communist Party), and the state-owned enterprises. Diagnose formatting issues, fix punctuation, and apply standardized styles with one command. Available for Claude Code, Codex, and OpenCode.
 
 公文格式助手是一个面向中文公文排版的 Skill 工具包，用于诊断 Word 文档格式问题、修复中英文标点和空格混用、统一公文/论文/法律文书格式、处理页码和表格，并支持从纯文本或 Markdown 生成规范 DOCX。
